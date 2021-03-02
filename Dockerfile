@@ -54,6 +54,10 @@ RUN echo 'umask 002' >> /root/.bashrc
 RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
+RUN pecl install sqlsrv-5.8.0 pdo_sqlsrv-5.8.0 \
+&& docker-php-ext-enable sqlsrv pdo_sqlsrv
+
+
 # Install Composer
 ENV COMPOSER_HOME /composer
 ENV PATH ./vendor/bin:/composer/vendor/bin:$PATH
