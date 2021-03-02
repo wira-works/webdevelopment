@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     #&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
     #&& docker-php-ext-install ldap
 
+
 # Install XDebug - Required for code coverage in PHPUnit
 RUN yes | pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
@@ -54,8 +55,22 @@ RUN echo 'umask 002' >> /root/.bashrc
 RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
-RUN pecl install sqlsrv-5.8.0 pdo_sqlsrv-5.8.0 \
-&& docker-php-ext-enable sqlsrv pdo_sqlsrv
+# Install git
+RUN apt-get update \
+    && apt-get -y install git \
+    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+    
+# Install MS ODBC Driver for SQL Server
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev \
+    && pecl install sqlsrv \
+    && pecl install pdo_sqlsrv \
+    && echo "extension=pdo_sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini \
+    && echo "extension=sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-sqlsrv.ini \
+    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+
 
 
 # Install Composer
