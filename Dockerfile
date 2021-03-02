@@ -1,5 +1,10 @@
 FROM php:7.4-apache
 
+ENV ACCEPT_EULA=Y
+
+# Fix debconf warnings upon build
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
         unzip \
         libfreetype6-dev \
@@ -63,14 +68,13 @@ RUN apt-get update \
 # Install MS ODBC Driver for SQL Server
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update \
+    && apt-get updat/e \
     && apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev \
     && pecl install sqlsrv \
     && pecl install pdo_sqlsrv \
-    && echo "extension=pdo_sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini \
-    && echo "extension=sqlsrv.so" >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-
 
 
 # Install Composer
