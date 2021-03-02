@@ -66,14 +66,19 @@ RUN apt-get update \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
     
 # Install MS ODBC Driver for SQL Server
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get update \
-    && apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev libgssapi-krb5-2 \
-    && pecl install sqlsrv \
+RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
+RUN apt-get install ./msodbcsql17_17.7.1.1-1_amd64.deb -y
+
+#RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    #&& curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    #apt-get update \
+    #&& apt-get -y --no-install-recommends install msodbcsql17 unixodbc-dev libgssapi-krb5-2 \
+RUN pecl install sqlsrv \
     && pecl install pdo_sqlsrv \
-    && echo "extension=pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/sqlsrv.ini \
-    && echo "extension=pdo_sqlsrv.so" > /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
+    #&& echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
+    #&& echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" >> 'php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"'/30-pdo_sqlsrv.ini \
+    && echo "extension=sqlsrv.so" >> 'php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"'/30-sqlsrv.ini \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 
