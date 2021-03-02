@@ -37,10 +37,10 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY phpinfo.php /var/lib/nginx/html/
-#COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 COPY configure.sh /configure.sh
-#COPY supervisord.conf /etc/supervisord.conf
+COPY supervisord.conf /etc/supervisord.conf
 VOLUME ["/var/lib/nginx/html/"]
 EXPOSE 80/tcp
 RUN sh /configure.sh
-#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
