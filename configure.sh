@@ -1,8 +1,8 @@
 #!/bin/sh
 # nginx config
-adduser -D -g 'www' www
-chown -R www:www /var/lib/nginx
-mkdir /run/nginx && touch /run/nginx/nginx.pid
+#adduser -D -g 'www' www
+#chown -R www:www /var/lib/nginx
+mkdir -p /run/nginx && touch /run/nginx/nginx.pid
 # set variable
 PHP_FPM_USER="www"
 PHP_FPM_GROUP="www"
