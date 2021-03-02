@@ -23,7 +23,7 @@ RUN apk update \
     php7-pdo_mysql \
     php7-gettext php7-xmlreader php7-xmlrpc \
     php7-bz2 php7-iconv php7-pdo_dblib php7-curl php7-ctype \
-    make gcc g++ \
+    make g++ \
     supervisor \
     && pecl channel-update pecl.php.net \
     && echo 'instantclient,/usr/local/instantclient' | pear install pecl/oci8-2.2.0 \
