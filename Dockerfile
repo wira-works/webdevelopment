@@ -38,14 +38,14 @@ ENV PATH ./vendor/bin:/composer/vendor/bin:$PATH
 ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY phpinfo.php /var/lib/nginx/html/phpinfo.php
+COPY phpinfo.php /app/public/phpinfo.php
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY configure.sh /configure.sh
-#COPY supervisord.conf /etc/supervisord.conf
+COPY sites-enabled/default.conf /etc/nginx/sites-enabled/default.conf
+COPY supervisord.conf /etc/supervisord.conf
 
 WORKDIR /app
 
-VOLUME ["/var/lib/nginx/html/"]
-EXPOSE 80/tcp
-#RUN sh /configure.sh
-#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
+EXPOSE 80
+RUN sh /configure.sh
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
