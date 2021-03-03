@@ -69,13 +69,13 @@ RUN apt-get update \
 # Install MS ODBC Driver for SQL Server
 #RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
 COPY msodbcsql17_17.7.1.1-1_amd64.deb /opt/msodbcsql17_17.7.1.1-1_amd64.deb
-RUN apt-get install ./opt/msodbcsql17_17.7.1.1-1_amd64.deb -y
 RUN apt-get install unixodbc-dev libgssapi-krb5-2 -y
+RUN apt-get install ./opt/msodbcsql17_17.7.1.1-1_amd64.deb -y
 
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-    apt-get update \
-    && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 \
+# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+#     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+#     apt-get update \
+#     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
 RUN pecl install sqlsrv \
     && pecl install pdo_sqlsrv \
     #&& echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
