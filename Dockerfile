@@ -75,12 +75,12 @@ RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
 #     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
 #     apt-get update \
 #     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
-RUN pecl install sqlsrv
-RUN pecl install pdo_sqlsrv
-RUN echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini
-RUN echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
+RUN pecl install sqlsrv \
+    && pecl install pdo_sqlsrv \ 
+    && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
-RUN unlink /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
+#RUN unlink /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
 
 
 # Install Composer
