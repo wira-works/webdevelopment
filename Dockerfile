@@ -69,7 +69,7 @@ RUN apt-get update \
 # Install MS ODBC Driver for SQL Server
 #RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
 COPY msodbcsql17_17.7.1.1-1_amd64.deb /tmp/
-RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb -y
+RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
 
 # RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 #     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
