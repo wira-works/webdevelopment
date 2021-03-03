@@ -63,7 +63,7 @@ RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
 RUN apt-get update \
-    && apt-get -y install git \
+    && apt-get -y install git unixodbc \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
     
 # Install MS ODBC Driver for SQL Server
