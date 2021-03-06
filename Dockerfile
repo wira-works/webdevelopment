@@ -63,8 +63,7 @@ RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
 RUN apt-get update \
-    && apt-get -y install git unixodbc \
-    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+    && apt-get -y install git unixodbc
     
 # Install MS ODBC Driver for SQL Server
 #RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
@@ -76,7 +75,7 @@ RUN apt-get update \
 #     apt-get update \
 #     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
 RUN apt-get update
-RUN apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
+RUN apt-get install msodbcsql17 unixodbc-dev -y
 RUN pecl install sqlsrv \
     && pecl install pdo_sqlsrv \ 
     && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
