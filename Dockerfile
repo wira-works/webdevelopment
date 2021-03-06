@@ -59,7 +59,7 @@ RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
-RUN apt-get -y install git unixodbc-dev
+RUN apt-get -y install git unixodbc-dev unixodbc
     
 # Install MS ODBC Driver for SQL Server
 RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
