@@ -16,9 +16,6 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) iconv gettext \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install pdo pdo_mysql mysqli bcmath
-    #&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
-    #&& docker-php-ext-install ldap
-
 
 # Install XDebug - Required for code coverage in PHPUnit
 RUN yes | pecl install xdebug \
@@ -62,8 +59,7 @@ RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
-RUN apt-get update \
-    && apt-get -y install git unixodbc
+RUN apt-get -y install git unixodbc-dev
     
 # Install MS ODBC Driver for SQL Server
 #RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
@@ -74,8 +70,8 @@ RUN apt-get update \
 #     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
 #     apt-get update \
 #     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
-RUN apt-get update
-RUN apt-get install msodbcsql17 unixodbc-dev -y
+#RUN apt-get update
+RUN apt-get install msodbcsql17 -y
 RUN pecl install sqlsrv \
     && pecl install pdo_sqlsrv \ 
     && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
