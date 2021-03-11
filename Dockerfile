@@ -77,7 +77,7 @@ RUN pecl install sqlsrv \
     && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
     && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
-#RUN unlink /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
+RUN unlink /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
 
 
 # Install Composer
