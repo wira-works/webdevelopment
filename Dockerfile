@@ -29,6 +29,9 @@ COPY docker-php.conf /etc/apache2/conf-enabled/docker-php.conf
 # Copy over the php ini
 COPY docker-php.ini $PHP_INI_DIR/conf.d/
 
+RUN cd /usr/local/etc/php/conf.d/ && \
+  echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini
+
 # Set the timezone
 ENV TZ=Asia/Jakarta
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
