@@ -1,6 +1,12 @@
 FROM php:7.4-apache
 
+ENV ACCEPT_EULA=Y
+
+# Fix debconf warnings upon build
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && apt-get install -y \
+        wget \ 
         unzip \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -10,20 +16,21 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) iconv gettext \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install pdo pdo_mysql mysqli bcmath
-    #&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
-    #&& docker-php-ext-install ldap
 
 # Install XDebug - Required for code coverage in PHPUnit
 RUN yes | pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+    && echo "xdebug.remote_autostartvg=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # Copy over the php conf
 COPY docker-php.conf /etc/apache2/conf-enabled/docker-php.conf
 
 # Copy over the php ini
 COPY docker-php.ini $PHP_INI_DIR/conf.d/
+
+RUN cd /usr/local/etc/php/conf.d/ && \
+  echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini
 
 # Set the timezone
 ENV TZ=Asia/Jakarta
@@ -53,6 +60,27 @@ RUN echo 'umask 002' >> /root/.bashrc
 
 RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
+
+# Install git
+RUN apt-get -y install git unixodbc-dev unixodbc
+    
+# Install MS ODBC Driver for SQL Server
+RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
+COPY msodbcsql17_17.7.1.1-1_amd64.deb /tmp/
+RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
+
+# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+#     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+#     apt-get update \
+#     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
+#RUN apt-get update
+#RUN apt-get install msodbcsql17 -y
+RUN pecl install sqlsrv \
+    && pecl install pdo_sqlsrv \ 
+    && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
+    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
+
 
 # Install Composer
 ENV COMPOSER_HOME /composer
