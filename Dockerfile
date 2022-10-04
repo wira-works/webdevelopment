@@ -1,4 +1,4 @@
-FROM php:8.0.24-apache
+FROM php:8-apache
 
 ENV ACCEPT_EULA=Y
 
@@ -58,7 +58,7 @@ RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/instantclient"' >> /root/.bashrc
 RUN echo 'umask 002' >> /root/.bashrc
 
-RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.2.0
+RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
@@ -90,6 +90,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN composer --version
 
 # Add the files and set permissions
+
 WORKDIR /var/www/html
 ADD . /var/www/html
 RUN chown -R www-data:www-data /var/www/html
