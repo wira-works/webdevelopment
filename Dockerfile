@@ -8,19 +8,23 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
         wget \ 
         unzip \
+        apt-utils \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
         libaio1 \
+        libxml2-dev \
+        libmagickwand-dev \
         #libldap2-dev \
     && docker-php-ext-install -j$(nproc) iconv gettext \
     && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install soap \
     && docker-php-ext-install pdo pdo_mysql mysqli bcmath
 
 # Install XDebug - Required for code coverage in PHPUnit
 RUN yes | pecl install xdebug \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_autostartvg=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # Copy over the php conf
