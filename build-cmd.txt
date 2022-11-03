@@ -1,1 +1,2 @@
-sudo docker-buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t chandrawira/php8-apache-orcl-mssql-mysql:latest --push .su
+sudo docker build -t chandrawira/php8-apache-orcl-mssql-mysql:latest
+sudo docker push chandrawira/php8-apache-orcl-mssql-mysql:latest

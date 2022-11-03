@@ -96,7 +96,8 @@ RUN composer --version
 # Add the files and set permissions
 
 WORKDIR /var/www/html
-ADD . /var/www/html
+ADD phpinfo.php /var/www/html
 RUN chown -R www-data:www-data /var/www/html
+RUN rm msodbcsql17_17.7.1.1-1_amd64.deb
 
 EXPOSE 80
