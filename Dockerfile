@@ -82,9 +82,14 @@ RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
 RUN pecl install sqlsrv \
     && pecl install pdo_sqlsrv \ 
     && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
-    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini \
-    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
+    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini 
 
+#mongodb
+RUN pecl install mongodb \
+    && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
+
+#clean
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
 
 # Install Composer
 ENV COMPOSER_HOME /composer
