@@ -1,2 +1,4 @@
-sudo docker build -t chandrawira/php8-apache-orcl-mssql-mysql:latest
-sudo docker push chandrawira/php8-apache-orcl-mssql-mysql:latest
+#build
+docker build -t chandrawira/web-development:latest
+#push
+docker push chandrawira/web-development:latest
