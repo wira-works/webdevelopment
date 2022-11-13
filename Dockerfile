@@ -104,6 +104,8 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer --version
 
+RUN docker-php-ext-install sockets
+
 # Add the files and set permissions
 WORKDIR /var/www/html
 ADD phpinfo.php /var/www/html
