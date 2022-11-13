@@ -2,6 +2,12 @@ FROM php:8-apache
 
 ENV ACCEPT_EULA=Y
 
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+
 # Fix debconf warnings upon build
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -43,7 +49,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf "log_errors = On \nerror_log = /dev/stderr\n" > /usr/local/etc/php/conf.d/php-logs.ini
 
 # Enable mod_rewrite
-RUN a2enmod rewrite
+RUN a2enmod rewrite && service apache2 restart
 
 # Install Oracle instantclient
 ADD instantclient-basiclite-linux.x64-19.5.0.0.0dbru.zip /tmp/
@@ -99,10 +105,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN composer --version
 
 # Add the files and set permissions
-
 WORKDIR /var/www/html
 ADD phpinfo.php /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-RUN rm msodbcsql17_17.7.1.1-1_amd64.deb
+RUN rm /var/www/html/msodbcsql17_17.7.1.1-1_amd64.deb
 
 EXPOSE 80
