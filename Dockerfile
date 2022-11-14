@@ -94,9 +94,6 @@ RUN pecl install sqlsrv \
 RUN pecl install mongodb \
     && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
 
-#clean
-RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
-
 # Install Composer
 ENV COMPOSER_HOME /composer
 ENV PATH ./vendor/bin:/composer/vendor/bin:$PATH
@@ -104,7 +101,16 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer --version
 
-RUN docker-php-ext-install sockets
+RUN docker-php-ext-install sockets && apt-get install -y libicu-dev zlib1g-dev libzip-dev \ 
+&& docker-php-ext-configure intl \
+&& docker-php-ext-install intl \ 
+&& docker-php-ext-configure zip \
+&& docker-php-ext-install zip
+
+#RUN apt-get install -y nodejs npm
+
+#clean
+RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
 
 # Add the files and set permissions
 WORKDIR /var/www/html
