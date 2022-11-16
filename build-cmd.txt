@@ -1,2 +1,2 @@
-docker build -t chandrawira/web-development:latest .
-docker push chandrawira/web-development:latest
+docker build -t chandrawira/web-development:php5.6 .
+docker push chandrawira/web-development:php5.6

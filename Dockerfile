@@ -1,4 +1,4 @@
-FROM php:8-apache
+FROM php:5.6-apache
 
 ENV ACCEPT_EULA=Y
 
@@ -28,10 +28,10 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql mysqli bcmath
 
 # Install XDebug - Required for code coverage in PHPUnit
-RUN yes | pecl install xdebug \
-    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.remote_autostartvg=off" >> /usr/local/etc/php/conf.d/xdebug.ini
+#RUN yes | pecl install xdebug \
+#    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+#    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
+#    && echo "xdebug.remote_autostartvg=off" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 # Copy over the php conf
 COPY docker-php.conf /etc/apache2/conf-enabled/docker-php.conf
@@ -68,16 +68,16 @@ RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/instantclient"' >> /root/.bashrc
 RUN echo 'umask 002' >> /root/.bashrc
 
-RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8
+RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.0.10
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
 RUN apt-get -y install git unixodbc-dev unixodbc
     
 # Install MS ODBC Driver for SQL Server
-RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
-COPY msodbcsql17_17.7.1.1-1_amd64.deb /tmp/
-RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
+#RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
+#COPY msodbcsql17_17.7.1.1-1_amd64.deb /tmp/
+#RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
 
 # RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
 #     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
@@ -85,14 +85,14 @@ RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
 #     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
 #RUN apt-get update
 #RUN apt-get install msodbcsql17 -y
-RUN pecl install sqlsrv \
-    && pecl install pdo_sqlsrv \ 
-    && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
-    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini 
+#RUN pecl install sqlsrv \
+#    && pecl install pdo_sqlsrv \ 
+#    && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
+#    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini 
 
 #mongodb
-RUN pecl install mongodb \
-    && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
+#RUN pecl install mongodb \
+#    && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
 
 # Install Composer
 ENV COMPOSER_HOME /composer
@@ -116,6 +116,6 @@ RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/
 WORKDIR /var/www/html
 ADD phpinfo.php /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-RUN rm /var/www/html/msodbcsql17_17.7.1.1-1_amd64.deb
+#RUN rm /var/www/html/msodbcsql17_17.7.1.1-1_amd64.deb
 
 EXPOSE 80
