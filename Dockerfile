@@ -109,6 +109,8 @@ RUN docker-php-ext-install sockets && apt-get install -y libicu-dev zlib1g-dev l
 
 #RUN apt-get install -y nodejs npm
 RUN apt-get install -y libmcrypt-dev && docker-php-ext-install mcrypt
+RUN docker-php-ext-install exif && docker-php-ext-enable exif  
+RUN docker-php-ext-install opcache && docker-php-ext-enable opcache
 #clean
 RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
 
