@@ -49,7 +49,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf "log_errors = On \nerror_log = /dev/stderr\n" > /usr/local/etc/php/conf.d/php-logs.ini
 
 # Enable mod_rewrite
-RUN a2enmod rewrite && service apache2 restart
+RUN a2enmod rewrite && a2enmod headers && service apache2 restart
 
 # Install Oracle instantclient
 ADD instantclient-basiclite-linux.x64-19.5.0.0.0dbru.zip /tmp/
