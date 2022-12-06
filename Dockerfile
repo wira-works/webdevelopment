@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) iconv gettext \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install soap \
-    && docker-php-ext-install pdo pdo_mysql mysqli bcmath
+    && docker-php-ext-install pdo pdo_mysql mysqli bcmath \
+    && docker-php-ext-install exif 
 
 # Install XDebug - Required for code coverage in PHPUnit
 RUN yes | pecl install xdebug \
