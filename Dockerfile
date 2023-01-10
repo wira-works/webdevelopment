@@ -1,4 +1,4 @@
-FROM php:8-apache
+FROM php:8.0.27-apache
 
 ENV ACCEPT_EULA=Y
 
@@ -68,7 +68,7 @@ RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/instantclient"' >> /root/.bashrc
 RUN echo 'umask 002' >> /root/.bashrc
 
-RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8
+RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-3.0.1
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
