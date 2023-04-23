@@ -1,4 +1,4 @@
-FROM php:8-apache
+FROM php:apache
 
 ENV ACCEPT_EULA=Y
 
@@ -68,7 +68,7 @@ RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
 RUN echo 'export LD_LIBRARY_PATH="/usr/local/instantclient"' >> /root/.bashrc
 RUN echo 'umask 002' >> /root/.bashrc
 
-RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8
+RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8-3.0.1
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
@@ -108,6 +108,12 @@ RUN docker-php-ext-install sockets && apt-get install -y libicu-dev zlib1g-dev l
 && docker-php-ext-install zip
 
 #RUN apt-get install -y nodejs npm
+RUN apt-get install cron -y
+COPY crontab /etc/cron.d/crontab
+USER root
+RUN chmod 0644 /etc/cron.d/crontab
+RUN crontab /etc/cron.d/crontab
+RUN touch /var/log/cron.log
 
 #clean
 RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
