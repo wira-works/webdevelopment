@@ -108,12 +108,12 @@ RUN docker-php-ext-install sockets && apt-get install -y libicu-dev zlib1g-dev l
 && docker-php-ext-install zip
 
 #RUN apt-get install -y nodejs npm
-RUN apt-get install cron -y
-COPY crontab /etc/cron.d/crontab
-USER root
-RUN chmod 0644 /etc/cron.d/crontab
-RUN crontab /etc/cron.d/crontab
-RUN touch /var/log/cron.log
+#RUN apt-get install cron -y
+#COPY crontab /etc/cron.d/crontab
+#USER root
+#RUN chmod 0644 /etc/cron.d/crontab
+#RUN crontab /etc/cron.d/crontab
+#RUN touch /var/log/cron.log
 
 #clean
 RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
