@@ -1,0 +1,22 @@
+version: '3.5'
+
+services:
+#################### APPLICATION #######################
+ app:
+    image: chandrawira/web-development:latest
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    restart: always
+    volumes:
+      - /home/src/www:/var/www/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - "80:80"
+    deploy:
+     mode: replicated
+     replicas: 1
+     resources:
+        limits:
+          memory: 0.5G
+     placement:
+        constraints: [node.labels.application == true]
