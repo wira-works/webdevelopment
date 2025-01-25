@@ -96,6 +96,27 @@ RUN docker-php-ext-install sockets && apt-get install -y libicu-dev zlib1g-dev l
 RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - &&\
 apt-get install nodejs -y
 
+# Install MS ODBC Driver for SQL Server
+RUN curl -sSL -O https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb
+# Install the package
+RUN dpkg -i packages-microsoft-prod.deb
+# Delete the file
+RUN rm packages-microsoft-prod.deb
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql18
+# optional: for bcp and sqlcmd
+RUN ACCEPT_EULA=Y apt-get install -y mssql-tools18
+RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+#RUN source ~/.bashrc
+# optional: for unixODBC development headers
+RUN apt-get install -y unixodbc-dev
+# optional: kerberos library for debian-slim distributions
+RUN apt-get install -y libgssapi-krb5-2
+RUN pecl install sqlsrv \
+    && pecl install pdo_sqlsrv \ 
+    && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
+    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini 
+
 #clean
 RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* 
 

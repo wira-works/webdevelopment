@@ -1,2 +1,2 @@
-docker build -t chandrawira/web-development:php8-nodejs .
+docker build -t chandrawira/php-apache-oracle-mssql .
 docker push chandrawira/web-development:php8-nodejs
