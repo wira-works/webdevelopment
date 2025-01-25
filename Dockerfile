@@ -1,4 +1,4 @@
-FROM php:8-apache
+FROM php:8.4-apache
 
 ENV ACCEPT_EULA=Y
 
@@ -73,24 +73,8 @@ RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8
 RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 
 # Install git
-RUN apt-get -y install git unixodbc-dev unixodbc
+RUN apt-get -y install git
     
-# Install MS ODBC Driver for SQL Server
-RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
-COPY msodbcsql17_17.7.1.1-1_amd64.deb /tmp/
-RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
-
-# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-#     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-#     apt-get update \
-#     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
-#RUN apt-get update
-#RUN apt-get install msodbcsql17 -y
-RUN pecl install sqlsrv \
-    && pecl install pdo_sqlsrv \ 
-    && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
-    && echo "extension=pdo_sqlsrv.so" >> /usr/local/etc/php/conf.d/pdo_sqlsrv.ini 
-
 #mongodb
 RUN pecl install mongodb \
     && echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
@@ -119,6 +103,5 @@ RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/
 WORKDIR /var/www/html
 ADD phpinfo.php /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-RUN rm /var/www/html/msodbcsql17_17.7.1.1-1_amd64.deb
 
 EXPOSE 80
