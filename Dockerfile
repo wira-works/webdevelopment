@@ -1,4 +1,4 @@
-FROM php:8.0.27-apache
+FROM php:8.2-apache
 
 ENV ACCEPT_EULA=Y
 
@@ -75,16 +75,22 @@ RUN echo "extension=oci8.so" > /usr/local/etc/php/conf.d/php-oci8.ini
 RUN apt-get -y install git unixodbc-dev unixodbc
     
 # Install MS ODBC Driver for SQL Server
-RUN wget https://packages.microsoft.com/debian/10/prod/pool/main/m/msodbcsql17/msodbcsql17_17.7.1.1-1_amd64.deb
-COPY msodbcsql17_17.7.1.1-1_amd64.deb /tmp/
-RUN dpkg -i /tmp/msodbcsql17_17.7.1.1-1_amd64.deb
+RUN curl -sSL -O https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb
+# Install the package
+RUN dpkg -i packages-microsoft-prod.deb
+# Delete the file
+RUN rm packages-microsoft-prod.deb
+RUN apt-get update
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql18
+# optional: for bcp and sqlcmd
+RUN ACCEPT_EULA=Y apt-get install -y mssql-tools18
+RUN echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+#RUN source ~/.bashrc
+# optional: for unixODBC development headers
+RUN apt-get install -y unixodbc-dev
+# optional: kerberos library for debian-slim distributions
+RUN apt-get install -y libgssapi-krb5-2
 
-# RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-#     && curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
-#     apt-get update \
-#     && apt-get -y install msodbcsql17 unixodbc-dev libgssapi-krb5-2 
-#RUN apt-get update
-#RUN apt-get install msodbcsql17 -y
 RUN pecl install sqlsrv \
     && pecl install pdo_sqlsrv \ 
     && echo "extension=sqlsrv.so" >> /usr/local/etc/php/conf.d/sqlsrv.ini \
@@ -116,6 +122,5 @@ RUN apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/
 WORKDIR /var/www/html
 ADD phpinfo.php /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-RUN rm /var/www/html/msodbcsql17_17.7.1.1-1_amd64.deb
 
 EXPOSE 80
